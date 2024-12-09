@@ -6,7 +6,7 @@ from gui import Ui_Widget  # Import the generated UI class
 from instaapi import InstaAPI
 from imgExtract import MediaExtractor
 
-class InstaApp(QtWidgets.QWidget, Ui_Widget):
+class IgExtractor(QtWidgets.QWidget, Ui_Widget):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
@@ -51,18 +51,17 @@ class InstaApp(QtWidgets.QWidget, Ui_Widget):
         self.display_results(insta_api, not_following_me_back, i_dont_follow_them_back)
 
     def display_results(self, insta_api, not_following_me_back, i_dont_follow_them_back):
-        self.output_area_1.clear()
-        self.output_area_2.clear()
-        self.output_area_1.addItem(f"Followers count: {len(insta_api.followers)}")
-        self.output_area_1.addItem(f"Following count: {len(insta_api.following)}")
+        self.output_area.clear()
+        self.output_area.addItem(f"Followers count: {len(insta_api.followers)}")
+        self.output_area.addItem(f"Following count: {len(insta_api.following)}")
 
-        self.output_area_1.addItem("\nUsers who don't follow me back:")
+        self.output_area.addItem("\nUsers who don't follow me back:")
         for idx, user in enumerate(sorted(not_following_me_back), start=1):
-            self.output_area_1.addItem(f"{idx}. {user}")
+            self.output_area.addItem(f"{idx}. {user}")
 
-        self.output_area_2.addItem("\nUsers who I don't follow back:")
+        self.output_area.addItem("\nUsers who I don't follow back:")
         for idx, user in enumerate(sorted(i_dont_follow_them_back), start=1):
-            self.output_area_2.addItem(f"{idx}. {user}")
+            self.output_area.addItem(f"{idx}. {user}")
 
         if self.checkBox.isChecked():
             self.save_results(not_following_me_back, i_dont_follow_them_back)
@@ -71,10 +70,8 @@ class InstaApp(QtWidgets.QWidget, Ui_Widget):
         file_path = QFileDialog.getSaveFileName(self, "Save As", "", "Text files (*.txt)")[0]
         if file_path:
             with open(file_path, 'w') as file:
-                for i in range(self.output_area_1.count()):
-                    file.write(self.output_area_1.item(i).text() + '\n')
-                for i in range(self.output_area_2.count()):
-                    file.write(self.output_area_2.item(i).text() + '\n')
+                for i in range(self.output_area.count()):
+                    file.write(self.output_area.item(i).text() + '\n')
 
     def save_results(self, not_following_me_back, i_dont_follow_them_back):
         current_directory = os.getcwd()
@@ -108,6 +105,6 @@ class InstaApp(QtWidgets.QWidget, Ui_Widget):
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
-    window = InstaApp()
+    window = IgExtractor()
     window.show()
     sys.exit(app.exec_())

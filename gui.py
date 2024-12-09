@@ -56,7 +56,7 @@ class Ui_Widget(object):
 
     def retranslateUi(self, Widget):
         _translate = QtCore.QCoreApplication.translate
-        Widget.setWindowTitle(_translate("Widget", "Widget"))
+        Widget.setWindowTitle(_translate("Widget", "IgExtractor"))
         self.savebox.setTitle(_translate("Widget", "Result"))
         self.save_button.setText(_translate("Widget", "Save As..."))
         self.checkBox.setText(_translate("Widget", "Autosave results"))

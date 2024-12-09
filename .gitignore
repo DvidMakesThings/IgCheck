@@ -4,3 +4,4 @@ not_following_byme.txt
 not_following_me.txt
 *data/
 *img/
+*__pycache__/

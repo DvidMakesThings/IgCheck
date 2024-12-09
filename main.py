@@ -13,6 +13,9 @@ class InstaApp(QtWidgets.QWidget, Ui_Widget):
         self.zip_file_path = None
 
         self.drop_area.mousePressEvent = self.browse_file
+        self.drop_area.setAcceptDrops(True)
+        self.drop_area.dragEnterEvent = self.dragEnterEvent
+        self.drop_area.dropEvent = self.dropEvent
         self.pushButton.clicked.connect(self.process_zip)
         self.save_button.clicked.connect(self.save_as)
         self.checkBox.stateChanged.connect(self.toggle_save_button)
@@ -21,6 +24,18 @@ class InstaApp(QtWidgets.QWidget, Ui_Widget):
     def browse_file(self, event):
         self.zip_file_path = QFileDialog.getOpenFileName(self, "Select ZIP file", "", "ZIP files (*.zip)")[0]
         if self.zip_file_path:
+            self.drop_area.setText(self.zip_file_path)
+            self.pushButton.setEnabled(True)
+            self.extractmedia.setEnabled(True)
+
+    def dragEnterEvent(self, event):
+        if event.mimeData().hasUrls():
+            event.acceptProposedAction()
+
+    def dropEvent(self, event):
+        urls = event.mimeData().urls()
+        if urls and urls[0].isLocalFile():
+            self.zip_file_path = urls[0].toLocalFile()
             self.drop_area.setText(self.zip_file_path)
             self.pushButton.setEnabled(True)
             self.extractmedia.setEnabled(True)
@@ -36,17 +51,18 @@ class InstaApp(QtWidgets.QWidget, Ui_Widget):
         self.display_results(insta_api, not_following_me_back, i_dont_follow_them_back)
 
     def display_results(self, insta_api, not_following_me_back, i_dont_follow_them_back):
-        self.output_area.clear()
-        self.output_area.addItem(f"Followers count: {len(insta_api.followers)}")
-        self.output_area.addItem(f"Following count: {len(insta_api.following)}")
+        self.output_area_1.clear()
+        self.output_area_2.clear()
+        self.output_area_1.addItem(f"Followers count: {len(insta_api.followers)}")
+        self.output_area_1.addItem(f"Following count: {len(insta_api.following)}")
 
-        self.output_area.addItem("\nUsers who don't follow me back:")
+        self.output_area_1.addItem("\nUsers who don't follow me back:")
         for idx, user in enumerate(sorted(not_following_me_back), start=1):
-            self.output_area.addItem(f"{idx}. {user}")
+            self.output_area_1.addItem(f"{idx}. {user}")
 
-        self.output_area.addItem("\nUsers who I don't follow back:")
+        self.output_area_2.addItem("\nUsers who I don't follow back:")
         for idx, user in enumerate(sorted(i_dont_follow_them_back), start=1):
-            self.output_area.addItem(f"{idx}. {user}")
+            self.output_area_2.addItem(f"{idx}. {user}")
 
         if self.checkBox.isChecked():
             self.save_results(not_following_me_back, i_dont_follow_them_back)
@@ -55,8 +71,10 @@ class InstaApp(QtWidgets.QWidget, Ui_Widget):
         file_path = QFileDialog.getSaveFileName(self, "Save As", "", "Text files (*.txt)")[0]
         if file_path:
             with open(file_path, 'w') as file:
-                for i in range(self.output_area.count()):
-                    file.write(self.output_area.item(i).text() + '\n')
+                for i in range(self.output_area_1.count()):
+                    file.write(self.output_area_1.item(i).text() + '\n')
+                for i in range(self.output_area_2.count()):
+                    file.write(self.output_area_2.item(i).text() + '\n')
 
     def save_results(self, not_following_me_back, i_dont_follow_them_back):
         current_directory = os.getcwd()

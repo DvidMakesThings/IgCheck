@@ -27,6 +27,13 @@ IgExtractor is a Python tool that helps you analyze your Instagram connections b
     cd IgExtractor
     ```
 
+2. Ensure you have Python 3.x installed on your system.
+
+3. Install the required Python packages:
+    ```sh
+    pip install -r requirements.txt
+    ```
+
 ## Usage
 
 ## How to Request and Download Your Instagram Data ZIP File
